@@ -1,0 +1,19 @@
+
+# Profiling files
+*out*
+vgcore.*
+
+# Executables
+*.out
+
+# Documentation
+docs/html
+docs/latex
+docs/search
+docs/*.js
+docs/*.css
+docs/*.html
+docs/*.svg
+
+# cacke folders
+*.cache
