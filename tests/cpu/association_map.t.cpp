@@ -59,12 +59,12 @@ TEST_CASE("Test a simple binary association map") {
   }
   SUBCASE("Test the view method") {
     auto view = map.view();
-    CHECK((*view)[0].size() == 3);
-    CHECK((*view)[1].size() == 2);
-    CHECK((*view)[0][0] == 0);
-    CHECK((*view)[0][1] == 2);
-    CHECK((*view)[0][2] == 4);
-    CHECK((*view)[1][0] == 1);
-    CHECK((*view)[1][1] == 3);
+    CHECK(view[0].size() == 3);
+    CHECK(view[1].size() == 2);
+    CHECK(view[0][0] == 0);
+    CHECK(view[0][1] == 2);
+    CHECK(view[0][2] == 4);
+    CHECK(view[1][0] == 1);
+    CHECK(view[1][1] == 3);
   }
 }

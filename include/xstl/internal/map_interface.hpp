@@ -89,7 +89,7 @@ namespace xstd {
         static_cast<TMap*>(this)->fill_impl(std::forward<TArgs>(args)...);
       }
 
-      auto* view() { return static_cast<TMap*>(this)->view_impl(); }
+      auto view() { return static_cast<TMap*>(this)->m_view; }
     };
 
   }  // namespace internal

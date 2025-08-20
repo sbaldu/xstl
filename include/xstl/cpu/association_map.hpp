@@ -64,7 +64,7 @@ namespace xstd {
     /// @param keys The number of bins (or keys) in the association map.
     explicit association_map(size_type values, size_type keys)
         : m_data(values, keys),
-          m_view{std::make_unique<View>(m_data.values.data(), m_data.keys.data())},
+          m_view{m_data.values.data(), m_data.keys.data()},
           m_values{values},
           m_keys{keys} {}
 
@@ -170,12 +170,12 @@ namespace xstd {
     /// @brief Returns a view of the association map.
     ///
     /// @return A pointer to a View of the association map.
-    View* view() { return m_view.get(); }
+    View view();
 #endif
 
   private:
     containers m_data;
-    std::unique_ptr<View> m_view;
+    View m_view;
     size_type m_values;
     size_type m_keys;
 
@@ -199,8 +199,6 @@ namespace xstd {
     std::pair<const_iterator, const_iterator> equal_range_impl(key_type key) const;
 
     void fill_impl(std::span<key_type> keys, std::span<mapped_type> values);
-
-    View* view_impl() { return m_view.get(); }
 
     friend struct internal::map_interface<association_map<T>>;
   };
