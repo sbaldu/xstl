@@ -1,0 +1,30 @@
+name: Build and run tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  testing:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: false
+
+    - name: Compile and run benchmark
+      working-directory: ${{ github.workspace }}/tests
+      run: |
+        cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build/debug 
+        ./build/debug/cpu/*.out --reporters=console --success
+        cmake -B build/release -DCMAKE_BUILD_TYPE=Release
+        cmake --build build/release
+        ./build/release/cpu/*.out --reporters=console --success
+
