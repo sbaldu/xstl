@@ -32,7 +32,8 @@ namespace xstd {
       mapped_container_type values;
       key_container_type keys;
 
-      explicit containers(key_type nvalues, key_type nkeys) : values(nvalues), keys(nkeys + 1) {}
+      explicit containers(key_type values_size, key_type keys_size)
+          : values(values_size), keys(keys_size + 1) {}
     };
 
     struct Extents {
@@ -57,24 +58,24 @@ namespace xstd {
       }
     };
 
-    /// @brief Constructs an association map with a specified number of elements and keys.
+    /// @brief Constructs an association map with a specified number of values and keys.
     ///
-    /// @param nelements The number of elements to be stored in the association map.
-    /// @param nkeys The number of bins (or keys) in the association map.
-    explicit association_map(size_type nelements, size_type nkeys)
-        : m_data(nelements, nkeys),
+    /// @param values The number of values to be stored in the association map.
+    /// @param keys The number of bins (or keys) in the association map.
+    explicit association_map(size_type values, size_type keys)
+        : m_data(values, keys),
           m_view{std::make_unique<View>(m_data.values.data(), m_data.keys.data())},
-          m_nvalues{nelements},
-          m_nkeys{nkeys} {}
+          m_values{values},
+          m_keys{keys} {}
 
 #ifdef XSTL_BUILD_DOXYGEN
     /// @brief Checks if the association map is empty.
     ///
     /// @return True if the association map is empty, false otherwise.
     auto empty() const;
-    /// @brief Returns the number of elements in the association map.
+    /// @brief Returns the number of values in the association map.
     ///
-    /// @return The number of elements in the association map.
+    /// @return The number of values in the association map.
     auto size() const;
     /// @brief Returns the extents of the containers in the association map.
     ///
@@ -115,16 +116,16 @@ namespace xstd {
     /// @return A const iterator to the first element with the specified key, or end() if not found.
     const_iterator find(key_type key) const;
 
-    /// @brief Returns the number of elements with a specific key.
+    /// @brief Returns the number of values with a specific key.
     ///
     /// @param key The key to count.
-    /// @return The number of elements with the specified key.
+    /// @return The number of values with the specified key.
     size_type count(key_type key) const;
 
-    /// @brief Checks if the association map contains elements associated to a specific key.
+    /// @brief Checks if the association map contains values associated to a specific key.
     ///
     /// @param key The key to check for.
-    /// @return True if the association map contains elements for the specified key, false otherwise.
+    /// @return True if the association map contains values for the specified key, false otherwise.
     bool contains(key_type key) const;
 
     /// @brief Returns an iterator to the first element with a key not less than the specified key.
@@ -149,15 +150,15 @@ namespace xstd {
     /// @return A const iterator to the first element with a key greater than the specified key.
     const_iterator upper_bound(key_type key) const;
 
-    /// @brief Returns a pair of iterators representing the range of elements with a specific key.
+    /// @brief Returns a pair of iterators representing the range of values with a specific key.
     ///
     /// @param key The key to search for.
-    /// @return A pair of iterators representing the range of elements with the specified key.
+    /// @return A pair of iterators representing the range of values with the specified key.
     std::pair<iterator, iterator> equal_range(key_type key);
-    /// @brief Returns a pair of const iterators representing the range of elements with a specific key.
+    /// @brief Returns a pair of const iterators representing the range of values with a specific key.
     ///
     /// @param key The key to search for.
-    /// @return A pair of const iterators representing the range of elements with the specified key.
+    /// @return A pair of const iterators representing the range of values with the specified key.
     std::pair<const_iterator, const_iterator> equal_range(key_type key) const;
 
     /// @brief Fills the association map with keys and values from the provided spans.
@@ -175,8 +176,8 @@ namespace xstd {
   private:
     containers m_data;
     std::unique_ptr<View> m_view;
-    size_type m_nvalues;
-    size_type m_nkeys;
+    size_type m_values;
+    size_type m_keys;
 
   private:
     Extents extents_impl() const;

@@ -12,7 +12,7 @@ namespace xstd {
 
   template <typename T>
   association_map<T>::Extents association_map<T>::extents_impl() const {
-    return {m_nvalues, m_nkeys};
+    return {m_values, m_keys};
   }
 
   template <typename T>
@@ -31,7 +31,7 @@ namespace xstd {
 
   template <typename T>
   bool association_map<T>::contains_impl(key_type key) const {
-    if (key < 0 || static_cast<size_type>(key) >= m_nkeys)
+    if (key < 0 || static_cast<size_type>(key) >= m_keys)
       throw std::out_of_range("Key is out of range.");
 
     return m_data.keys[key + 1] > m_data.keys[key];
@@ -71,9 +71,9 @@ namespace xstd {
   template <typename T>
   void association_map<T>::fill_impl(std::span<association_map<T>::key_type> keys,
                                      std::span<association_map<T>::mapped_type> values) {
-    std::vector<key_type> accumulator(m_nkeys, 0);
+    std::vector<key_type> accumulator(m_keys, 0);
     std::for_each(keys.begin(), keys.end(), [&](key_type key) { accumulator[key]++; });
-    std::vector<key_type> temporary_keys(m_nkeys + 1);
+    std::vector<key_type> temporary_keys(m_keys + 1);
     temporary_keys[0] = 0;
     std::inclusive_scan(accumulator.begin(), accumulator.end(), temporary_keys.begin() + 1);
     std::copy(temporary_keys.begin(), temporary_keys.end(), m_data.keys.begin());

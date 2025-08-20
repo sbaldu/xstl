@@ -11,8 +11,8 @@ namespace xstd {
     // implementations of all the common methods accross every backend.
     template <typename TMap>
     struct map_interface {
-      auto empty() const { return static_cast<const TMap*>(this)->m_nvalues == 0; }
-      auto size() const { return static_cast<const TMap*>(this)->m_nvalues; }
+      auto empty() const { return static_cast<const TMap*>(this)->m_values == 0; }
+      auto size() const { return static_cast<const TMap*>(this)->m_values; }
       auto extents() const { return static_cast<const TMap*>(this)->extents_impl(); }
 
       auto begin() { return static_cast<TMap&>(*this).m_data.values.data(); }
@@ -21,15 +21,15 @@ namespace xstd {
 
       auto end() {
         auto& m = static_cast<TMap&>(*this);
-        return m.m_data.values.data() + m.m_nvalues;
+        return m.m_data.values.data() + m.m_values;
       }
       auto end() const {
         auto& m = static_cast<TMap&>(*this);
-        return m.m_data.values.data() + m.m_nvalues;
+        return m.m_data.values.data() + m.m_values;
       }
       auto cend() const {
         auto& m = static_cast<TMap&>(*this);
-        return m.m_data.values.data() + m.m_nvalues;
+        return m.m_data.values.data() + m.m_values;
       }
 
       template <typename... TArgs>
