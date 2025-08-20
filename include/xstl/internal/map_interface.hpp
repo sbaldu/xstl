@@ -32,54 +32,26 @@ namespace xstd {
         return m.m_data.values.data() + m.m_values;
       }
 
-      template <typename... TArgs>
-      auto find(TArgs&&... args) {
-        return static_cast<TMap*>(this)->find_impl(std::forward<TArgs>(args)...);
-      }
-      template <typename... TArgs>
-      auto find(TArgs&&... args) const {
-        return static_cast<const TMap*>(this)->find_impl(std::forward<TArgs>(args)...);
+      auto find(auto key) { return static_cast<TMap*>(this)->find_impl(key); }
+      auto find(auto key) const { return static_cast<const TMap*>(this)->find_impl(key); }
+
+      auto count(auto key) const { return static_cast<const TMap*>(this)->count_impl(key); }
+
+      bool contains(auto key) const { return static_cast<const TMap*>(this)->contains_impl(key); }
+
+      auto lower_bound(auto key) { return static_cast<TMap*>(this)->lower_bound_impl(key); }
+      auto lower_bound(auto key) const {
+        return static_cast<const TMap*>(this)->lower_bound_impl(key);
       }
 
-      template <typename... TArgs>
-      auto count(TArgs&&... args) const {
-        static_assert(std::is_invocable_v<decltype(&TMap::count_impl), const TMap, TArgs...>,
-                      "The arguments provided are not compatible with the selected backend.");
-        return static_cast<const TMap*>(this)->count_impl(std::forward<TArgs>(args)...);
+      auto upper_bound(auto key) { return static_cast<TMap*>(this)->upper_bound_impl(key); }
+      auto upper_bound(auto key) const {
+        return static_cast<const TMap*>(this)->upper_bound_impl(key);
       }
 
-      template <typename... TArgs>
-      bool contains(TArgs&&... args) const {
-        static_assert(std::is_invocable_v<decltype(&TMap::contains_impl), const TMap, TArgs...>,
-                      "The arguments provided are not compatible with the selected backend.");
-        return static_cast<const TMap*>(this)->contains_impl(std::forward<TArgs>(args)...);
-      }
-
-      template <typename... TArgs>
-      auto lower_bound(TArgs&&... args) {
-        return static_cast<TMap*>(this)->lower_bound_impl(std::forward<TArgs>(args)...);
-      }
-      template <typename... TArgs>
-      auto lower_bound(TArgs&&... args) const {
-        return static_cast<const TMap*>(this)->lower_bound_impl(std::forward<TArgs>(args)...);
-      }
-
-      template <typename... TArgs>
-      auto upper_bound(TArgs&&... args) {
-        return static_cast<TMap*>(this)->upper_bound_impl(std::forward<TArgs>(args)...);
-      }
-      template <typename... TArgs>
-      auto upper_bound(TArgs&&... args) const {
-        return static_cast<const TMap*>(this)->upper_bound_impl(std::forward<TArgs>(args)...);
-      }
-
-      template <typename... TArgs>
-      auto equal_range(TArgs&&... args) {
-        return static_cast<TMap*>(this)->equal_range_impl(std::forward<TArgs>(args)...);
-      }
-      template <typename... TArgs>
-      auto equal_range(TArgs&&... args) const {
-        return static_cast<const TMap*>(this)->equal_range_impl(std::forward<TArgs>(args)...);
+      auto equal_range(auto key) { return static_cast<TMap*>(this)->equal_range_impl(key); }
+      auto equal_range(auto key) const {
+        return static_cast<const TMap*>(this)->equal_range_impl(key);
       }
 
       template <typename... TArgs>
