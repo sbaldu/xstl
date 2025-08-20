@@ -1,10 +1,11 @@
 # .github/workflows/cmake-format-check.yml
 # author: Wahid Redjeb, CERN
 
-name: CMake format check
+name: Check formatting of CMake files with cmake-format
 
 on:
   pull_request:
+    branches: [ main ]
     paths:
       - "**/CMakeLists.txt"
       - "**/*.cmake"
