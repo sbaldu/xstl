@@ -32,7 +32,7 @@ namespace xstd {
       mapped_container_type values;
       key_container_type keys;
 
-      explicit containers(key_type values_size, key_type keys_size)
+      explicit containers(size_type values_size, size_type keys_size)
           : values(values_size), keys(keys_size + 1) {}
     };
 
