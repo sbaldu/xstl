@@ -4,9 +4,11 @@
 
 #include "xstl/internal/map_interface.hpp"
 #include "xstl/alpaka/detail/defines.hpp"
+#include "xstl/alpaka/detail/keys_host_wrapper.hpp"
 #include <alpaka/alpaka.hpp>
-#include <optional>
+#include <concepts>
 #include <utility>
+#include <variant>
 
 namespace xstd {
   namespace alpaka {
@@ -16,7 +18,7 @@ namespace xstd {
     ///
     /// @tparam T The type of the values stored in the association map.
     template <typename T>
-    class association_map : public internal::map_interface<association_map<T>> {
+    class association_map : public xstd::internal::map_interface<association_map<T>> {
     public:
       using key_type = int32_t;
       using mapped_type = T;
@@ -24,28 +26,34 @@ namespace xstd {
       using size_type = std::size_t;
       using iterator = value_type*;
       using const_iterator = const value_type*;
-      using key_container_type = alpaka::Buf<Device, key_type, Dim1D, Idx>;
-      using mapped_container_type = alpaka::Buf<Device, mapped_type, Dim1D, Idx>;
-	  using key_container_host_type = alpaka::Buf<alpaka::DevCpu, key_type, Dim1D, Idx>;
+      using key_container_type = ::alpaka::Buf<Device, key_type, internal::Dim1D, internal::Idx>;
+      using mapped_container_type =
+          ::alpaka::Buf<Device, mapped_type, internal::Dim1D, internal::Idx>;
+      using key_container_host_type =
+          ::alpaka::Buf<::alpaka::DevCpu, key_type, internal::Dim1D, internal::Idx>;
 
       struct containers {
         mapped_container_type values;
         key_container_type keys;
-		std::optional<key_container_host_type> keys_host;
+        detail::keys_host_wrapper<Device>::type keys_host;
 
         template <typename TQueue>
-          requires std::same<Device, alpaka::DevCpu>
-        explicit containers(key_type values_size, key_type keys_size, const TQueue&) {
-          values = alpaka::allocMappedBuf<mapped_type, Idx>(host, Platform(), Vec1D{values_size}));
-          keys = alpaka::allocMappedBuf<key_type, Idx>(host, Platform(), Vec1D{keys_size + 1});
-        }
+          requires std::same_as<Device, ::alpaka::DevCpu>
+        explicit containers(key_type values_size, key_type keys_size, const TQueue&)
+            : values{::alpaka::allocMappedBuf<mapped_type, internal::Idx>(
+                  host, Platform(), internal::Vec1D{values_size})},
+              keys{::alpaka::allocMappedBuf<key_type, internal::Idx>(
+                  host, Platform(), internal::Vec1D{keys_size + 1})},
+              keys_host{this->keys} {}
         template <typename TQueue>
-          requires(not std::same<Device, alpaka::DevCpu>)
-        explicit containers(key_type values_size, key_type keys_size, const TQueue& queue) {
-          values = alpaka::allocAsyncBuf<mapped_type, Idx>(queue, Vec1D{values_size}));
-          keys = alpaka::allocAsyncBuf<key_type, Idx>(queue, Vec1D{keys_size + 1});
-		  keys_host = alpaka::allocMappedBuf<key_type, Idx>(host, Platform(), Vec1D{keys_size + 1});
-        }
+          requires(not std::same_as<Device, ::alpaka::DevCpu>)
+        explicit containers(key_type values_size, key_type keys_size, const TQueue& queue)
+            : values{::alpaka::allocAsyncBuf<mapped_type, internal::Idx>(
+                  queue, internal::Vec1D{values_size})},
+              keys{::alpaka::allocAsyncBuf<key_type, internal::Idx>(
+                  queue, internal::Vec1D{keys_size + 1})},
+              keys_host{::alpaka::allocMappedBuf<key_type, internal::Idx>(
+                  host, Platform(), internal::Vec1D{keys_size + 1})} {}
       };
 
       struct Extents {
@@ -72,13 +80,13 @@ namespace xstd {
 
       /// @brief Constructs an association map with a specified number of elements and keys.
       ///
-      /// @param nelements The number of elements to be stored in the association map.
-      /// @param nkeys The number of bins (or keys) in the association map.
-	  template <typename TQueue>
-      explicit association_map(size_type elements, size_type keys, const TQueue& queue)
-          : m_data(elements, keys, queue),
+      /// @param values The number of elements to be stored in the association map.
+      /// @param keys The number of bins (or keys) in the association map.
+      template <typename TQueue>
+      explicit association_map(size_type values, size_type keys, const TQueue& queue)
+          : m_data(values, keys, queue),
             m_view{m_data.values.data(), m_data.keys.data()},
-            m_values{elements},
+            m_values{values},
             m_keys{keys} {}
 
 #ifdef XSTL_BUILD_DOXYGEN
@@ -176,14 +184,18 @@ namespace xstd {
 
       /// @brief Fills the association map with keys and values from the provided spans.
       ///
+      /// @tparam TQueue The type of the Alpaka queue used for memory operations.
+      /// This type must satisfy the Alpaka queue concept.
+      /// @param queue An Alpaka queue used for memory operations.
       /// @param keys A span of keys to be associated with the values.
       /// @param values A span of values to be associated with the keys.
-      void fill(std::span<key_type> keys, std::span<mapped_type> values);
+      template <typename TQueue>
+      void fill(TQueue& queue, std::span<key_type> keys, std::span<mapped_type> values);
 
       /// @brief Returns a view of the association map.
       ///
       /// @return A pointer to a View of the association map.
-      View view() { return m_view; }
+      View view();
 #endif
 
     private:
@@ -211,12 +223,13 @@ namespace xstd {
       std::pair<iterator, iterator> equal_range_impl(key_type key);
       std::pair<const_iterator, const_iterator> equal_range_impl(key_type key) const;
 
-      void fill_impl(std::span<key_type> keys, std::span<mapped_type> values);
+      template <typename TQueue>
+      inline void fill_impl(TQueue& queue, std::span<key_type> keys, std::span<mapped_type> values);
 
-      View* view_impl();
-
-      friend struct internal::map_interface<association_map<T>>;
+      friend struct xstd::internal::map_interface<association_map<T>>;
     };
 
   }  // namespace alpaka
 }  // namespace xstd
+
+#include "xstl/alpaka/detail/association_map.hpp"

@@ -56,8 +56,9 @@ namespace xstd {
 
       template <typename... TArgs>
       void fill(TArgs&&... args) {
-        static_assert(std::is_invocable_v<decltype(&TMap::fill_impl), TMap, TArgs...>,
-                      "The arguments provided are not compatible with the selected backend.");
+        static_assert(
+            requires(TMap& m, TArgs&&... xs) { m.fill_impl(std::forward<TArgs>(xs)...); },
+            "The arguments provided are not compatible with the selected backend.");
         static_cast<TMap*>(this)->fill_impl(std::forward<TArgs>(args)...);
       }
 

@@ -27,3 +27,4 @@ if(NOT doctest_POPULATED)
 endif()
 
 add_subdirectory(cpu)
+add_subdirectory(alpaka)

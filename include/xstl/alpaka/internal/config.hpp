@@ -4,8 +4,6 @@
 
 namespace xstd {
 
-  inline const alpaka_common::DevHost host = alpaka::getDevByIdx(alpaka::PlatformCpu{}, 0u);
-
   namespace alpaka_common {
 
     // common types and dimensions
@@ -36,6 +34,8 @@ namespace xstd {
     using PlatformHost = alpaka::PlatformCpu;
 
   }  // namespace alpaka_common
+
+  inline const alpaka_common::DevHost host = alpaka::getDevByIdx(alpaka::PlatformCpu{}, 0u);
 
 #ifdef ALPAKA_ACC_GPU_CUDA_ENABLED
   namespace alpaka_cuda_async {
