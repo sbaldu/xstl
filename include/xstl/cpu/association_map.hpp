@@ -31,9 +31,10 @@ namespace xstd {
     struct containers {
       mapped_container_type values;
       key_container_type keys;
+	  key_container_type& keys_host;
 
       explicit containers(size_type values_size, size_type keys_size)
-          : values(values_size), keys(keys_size + 1) {}
+          : values(values_size), keys(keys_size + 1), keys_host{keys} {}
     };
 
     struct Extents {
