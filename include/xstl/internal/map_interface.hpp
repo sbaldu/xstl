@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <span>
+#include <stdexcept>
 
 namespace xstd {
   namespace internal {
@@ -32,26 +33,58 @@ namespace xstd {
         return m.m_data.values.data() + m.m_values;
       }
 
-      auto find(auto key) { return static_cast<TMap*>(this)->find_impl(key); }
-      auto find(auto key) const { return static_cast<const TMap*>(this)->find_impl(key); }
+      auto find(auto key) {
+        auto& m = static_cast<TMap&>(*this);
+        return typename TMap::iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
+      }
+      auto find(auto key) const {
+        const auto& m = static_cast<const TMap&>(*this);
+        return typename TMap::const_iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
+      }
 
-      auto count(auto key) const { return static_cast<const TMap*>(this)->count_impl(key); }
+      auto count(auto key) const {
+        const auto& m = static_cast<const TMap&>(*this);
 
-      bool contains(auto key) const { return static_cast<const TMap*>(this)->contains_impl(key); }
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_keys)
+          throw std::out_of_range("Key is out of range.");
+        return m.m_data.keys_host[key + 1] - m.m_data.keys_host[key];
+      }
 
-      auto lower_bound(auto key) { return static_cast<TMap*>(this)->lower_bound_impl(key); }
+      bool contains(auto key) const {
+        const auto& m = static_cast<const TMap&>(*this);
+
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_keys)
+          throw std::out_of_range("Key is out of range.");
+        return m.m_data.keys_host[key + 1] > m.m_data.keys_host[key];
+      }
+
+      auto lower_bound(auto key) {
+        auto& m = static_cast<TMap&>(*this);
+        return typename TMap::iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
+      }
       auto lower_bound(auto key) const {
-        return static_cast<const TMap*>(this)->lower_bound_impl(key);
+        const auto& m = static_cast<const TMap&>(*this);
+        return typename TMap::const_iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
       }
 
-      auto upper_bound(auto key) { return static_cast<TMap*>(this)->upper_bound_impl(key); }
+      auto upper_bound(auto key) {
+        auto& m = static_cast<TMap&>(*this);
+        return typename TMap::iterator{m.m_data.values.data() + m.m_data.keys_host[key + 1]};
+      }
       auto upper_bound(auto key) const {
-        return static_cast<const TMap*>(this)->upper_bound_impl(key);
+        const auto& m = static_cast<const TMap&>(*this);
+        return typename TMap::const_iterator{m.m_data.values.data() + m.m_data.keys_host[key + 1]};
       }
 
-      auto equal_range(auto key) { return static_cast<TMap*>(this)->equal_range_impl(key); }
+      auto equal_range(auto key) {
+        auto& m = static_cast<TMap&>(*this);
+        return std::make_pair(m.m_data.values.data() + m.m_data.keys_host[key],
+                              m.m_data.values.data() + m.m_data.keys_host[key + 1]);
+      }
       auto equal_range(auto key) const {
-        return static_cast<const TMap*>(this)->equal_range_impl(key);
+        const auto& m = static_cast<const TMap&>(*this);
+        return std::make_pair(m.m_data.values.data() + m.m_data.keys_host[key],
+                              m.m_data.values.data() + m.m_data.keys_host[key + 1]);
       }
 
       template <typename... TArgs>

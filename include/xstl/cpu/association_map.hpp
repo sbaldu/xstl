@@ -31,7 +31,7 @@ namespace xstd {
     struct containers {
       mapped_container_type values;
       key_container_type keys;
-	  key_container_type& keys_host;
+      key_container_type& keys_host;
 
       explicit containers(size_type values_size, size_type keys_size)
           : values(values_size), keys(keys_size + 1), keys_host{keys} {}
@@ -182,22 +182,6 @@ namespace xstd {
 
   private:
     Extents extents_impl() const;
-
-    iterator find_impl(key_type key);
-    const_iterator find_impl(key_type key) const;
-
-    size_type count_impl(key_type key) const;
-
-    bool contains_impl(key_type key) const;
-
-    iterator lower_bound_impl(key_type key);
-    const_iterator lower_bound_impl(key_type key) const;
-
-    iterator upper_bound_impl(key_type key);
-    const_iterator upper_bound_impl(key_type key) const;
-
-    std::pair<iterator, iterator> equal_range_impl(key_type key);
-    std::pair<const_iterator, const_iterator> equal_range_impl(key_type key) const;
 
     void fill_impl(std::span<key_type> keys, std::span<mapped_type> values);
 
