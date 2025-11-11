@@ -1,3 +1,6 @@
+/// @file device_unique.hpp
+/// @brief A header file defining a unique pointer for HIP host pinned memory
+/// @author Simone Balducci, CMS-Patatrack team (CERN)
 
 #pragma once
 

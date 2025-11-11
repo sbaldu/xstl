@@ -1,5 +1,5 @@
 /// @file association_map.hpp
-/// @brief A header file defining the association_map class, which is a map-like structure
+/// @brief A header file defining the HIP implementation of the association_map, a GPU-friendly map-like structure
 /// @author Simone Balducci
 
 #pragma once

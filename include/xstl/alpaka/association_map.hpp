@@ -1,4 +1,6 @@
-
+/// @file association_map.hpp
+/// @brief A header file defining the alpaka implementation of the association_map, a GPU-friendly map-like structure
+/// @author Simone Balducci
 
 #pragma once
 
