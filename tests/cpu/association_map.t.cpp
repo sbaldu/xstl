@@ -1,5 +1,5 @@
 
-#include "xstl/cpu/association_map.hpp"
+#include "xstl/xstl.hpp"
 #include <iostream>
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN

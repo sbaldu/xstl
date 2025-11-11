@@ -1,4 +1,5 @@
-#include "xstl/cuda/association_map.hpp"
+
+#include "xstl/xstl.hpp"
 #include <iostream>
 #include <thrust/device_vector.h>
 
