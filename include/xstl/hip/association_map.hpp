@@ -187,6 +187,7 @@ namespace xstd::hip {
     Extents m_extents;
 
   private:
+    inline void fill_impl(std::span<key_type> keys, std::span<mapped_type> values);
     inline void fill_impl(hipStream_t stream,
                           std::span<key_type> keys,
                           std::span<mapped_type> values);
