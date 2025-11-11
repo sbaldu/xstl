@@ -1,7 +1,6 @@
 name: Run tests on NVIDIA GPU
 
-on:
-  workflow_dispatch:
+on: pull_request
 
 jobs:
   gpu-tests:
