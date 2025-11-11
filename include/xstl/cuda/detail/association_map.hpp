@@ -11,11 +11,6 @@
 namespace xstd::cuda {
 
   template <typename T>
-  association_map<T>::Extents association_map<T>::extents_impl() const {
-    return {m_values, m_keys};
-  }
-
-  template <typename T>
   inline void association_map<T>::fill_impl(cudaStream_t stream,
                                             std::span<key_type> keys,
                                             std::span<mapped_type> values) {

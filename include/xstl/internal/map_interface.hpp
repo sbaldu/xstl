@@ -12,9 +12,9 @@ namespace xstd {
     // implementations of all the common methods accross every backend.
     template <typename TMap>
     struct map_interface {
-      auto empty() const { return static_cast<const TMap*>(this)->m_values == 0; }
-      auto size() const { return static_cast<const TMap*>(this)->m_values; }
-      auto extents() const { return static_cast<const TMap*>(this)->extents_impl(); }
+      auto empty() const { return static_cast<const TMap*>(this)->m_extents.values == 0; }
+      auto size() const { return static_cast<const TMap*>(this)->m_extents.values; }
+      auto extents() const { return static_cast<const TMap*>(this)->m_extents; }
 
       auto begin() { return static_cast<TMap&>(*this).m_data.values.data(); }
       auto begin() const { return static_cast<TMap&>(*this).m_data.values.data(); }
@@ -22,15 +22,15 @@ namespace xstd {
 
       auto end() {
         auto& m = static_cast<TMap&>(*this);
-        return m.m_data.values.data() + m.m_values;
+        return m.m_data.values.data() + m.m_extents.values;
       }
       auto end() const {
         auto& m = static_cast<TMap&>(*this);
-        return m.m_data.values.data() + m.m_values;
+        return m.m_data.values.data() + m.m_extents.values;
       }
       auto cend() const {
         auto& m = static_cast<TMap&>(*this);
-        return m.m_data.values.data() + m.m_values;
+        return m.m_data.values.data() + m.m_extents.values;
       }
 
       auto find(auto key) {
@@ -45,7 +45,7 @@ namespace xstd {
       auto count(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
 
-        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_keys)
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
           throw std::out_of_range("Key is out of range.");
         return m.m_data.keys_host[key + 1] - m.m_data.keys_host[key];
       }
@@ -53,7 +53,7 @@ namespace xstd {
       bool contains(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
 
-        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_keys)
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
           throw std::out_of_range("Key is out of range.");
         return m.m_data.keys_host[key + 1] > m.m_data.keys_host[key];
       }

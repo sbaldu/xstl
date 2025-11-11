@@ -12,16 +12,11 @@
 namespace xstd {
 
   template <typename T>
-  association_map<T>::Extents association_map<T>::extents_impl() const {
-    return {m_values, m_keys};
-  }
-
-  template <typename T>
   void association_map<T>::fill_impl(std::span<association_map<T>::key_type> keys,
                                      std::span<association_map<T>::mapped_type> values) {
-    std::vector<key_type> accumulator(m_keys, 0);
+    std::vector<key_type> accumulator(m_extents.keys, 0);
     std::for_each(keys.begin(), keys.end(), [&](key_type key) { accumulator[key]++; });
-    std::vector<key_type> temporary_keys(m_keys + 1);
+    std::vector<key_type> temporary_keys(m_extents.keys + 1);
     temporary_keys[0] = 0;
     std::inclusive_scan(internal::default_policy,
                         accumulator.begin(),

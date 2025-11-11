@@ -66,13 +66,11 @@ namespace xstd::cuda {
     explicit association_map(size_type values, size_type keys)
         : m_data(values, keys),
           m_view{m_data.values.data(), m_data.keys.data(), Extents{values, keys}},
-          m_values{values},
-          m_keys{keys} {}
+          m_extents{values, keys} {}
     explicit association_map(size_type values, size_type keys, cudaStream_t stream)
         : m_data(values, keys, stream),
           m_view{m_data.values.data(), m_data.keys.data(), Extents{values, keys}},
-          m_values{values},
-          m_keys{keys} {}
+          m_extents{values, keys} {}
 
 #ifdef XSTL_BUILD_DOXYGEN
     /// @brief Checks if the association map is empty.
@@ -185,12 +183,9 @@ namespace xstd::cuda {
   private:
     containers m_data;
     View m_view;
-    size_type m_values;
-    size_type m_keys;
+    Extents m_extents;
 
   private:
-    Extents extents_impl() const;
-
     inline void fill_impl(cudaStream_t stream,
                           std::span<key_type> keys,
                           std::span<mapped_type> values);
