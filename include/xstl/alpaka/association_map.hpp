@@ -62,20 +62,22 @@ namespace xstd {
       };
 
       struct View {
-        value_type* values;
-        key_type* keys;
+        value_type* m_values;
+        key_type* m_keys;
+        Extents m_extents;
 
-        ALPAKA_FN_ACC constexpr std::span<value_type> operator[](key_type key) const {
-          const auto offset = keys[key];
-          const auto size = keys[key + 1] - offset;
-          return std::span<const value_type>(values + offset, size);
+        ALPAKA_FN_ACC constexpr auto operator[](key_type key) const {
+          const auto offset = m_keys[key];
+          const auto size = m_keys[key + 1] - offset;
+          return std::span<const value_type>(m_values + offset, size);
         }
 
-        ALPAKA_FN_ACC constexpr std::span<value_type> operator[](key_type key) {
-          const auto offset = keys[key];
-          const auto size = keys[key + 1] - offset;
-          return std::span<value_type>(values + offset, size);
+        ALPAKA_FN_ACC constexpr auto operator[](key_type key) {
+          const auto offset = m_keys[key];
+          const auto size = m_keys[key + 1] - offset;
+          return std::span<value_type>(m_values + offset, size);
         }
+        ALPAKA_FN_ACC constexpr auto extents() const { return m_extents; }
       };
 
       /// @brief Constructs an association map with a specified number of elements and keys.
@@ -85,7 +87,7 @@ namespace xstd {
       template <typename TQueue>
       explicit association_map(size_type values, size_type keys, const TQueue& queue)
           : m_data(values, keys, queue),
-            m_view{m_data.values.data(), m_data.keys.data()},
+            m_view{m_data.values.data(), m_data.keys.data(), Extents{values, keys}},
             m_values{values},
             m_keys{keys} {}
 
