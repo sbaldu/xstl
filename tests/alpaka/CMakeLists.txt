@@ -1,6 +1,6 @@
 FetchContent_Declare(
   alpaka
-  URL https://github.com/alpaka-group/alpaka/archive/refs/tags/1.2.0.tar.gz)
+  URL https://github.com/alpaka-group/alpaka/archive/refs/tags/2.0.0.tar.gz)
 FetchContent_MakeAvailable(alpaka)
 
 add_executable(association_map_alpaka_cpu.out association_map.t.cpp)

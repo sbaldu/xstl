@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16.0)
 
+project(XSTL_tests LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -28,3 +30,8 @@ endif()
 
 add_subdirectory(cpu)
 add_subdirectory(alpaka)
+
+include(CheckLanguage)
+if(CMAKE_CUDA_COMPILER)
+  add_subdirectory(cuda)
+endif()
