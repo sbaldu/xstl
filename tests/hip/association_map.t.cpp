@@ -7,10 +7,10 @@
 #include "doctest.h"
 
 TEST_CASE("Test a simple binary association map") {
-  cudaStream_t stream;
-  cudaStreamCreate(&stream);
+  hipStream_t stream;
+  hipStreamCreate(&stream);
 
-  xstd::cuda::association_map<int> map(5, 2, stream);
+  xstd::hip::association_map<int> map(5, 2, stream);
   thrust::device_vector<int> keys{0, 1, 0, 1, 0};
   thrust::device_vector<int> values{0, 1, 2, 3, 4};
   map.fill(stream, std::span<int>(keys.data().get(), 5), std::span<int>(values.data().get(), 5));
@@ -32,7 +32,7 @@ TEST_CASE("Test a simple binary association map") {
   }
   SUBCASE("Test the empty method") {
     CHECK(!map.empty());
-    xstd::cuda::association_map<int> empty_map(0, 0, stream);
+    xstd::hip::association_map<int> empty_map(0, 0, stream);
     CHECK(empty_map.empty());
   }
   SUBCASE("Test the find method") {
@@ -59,5 +59,5 @@ TEST_CASE("Test a simple binary association map") {
     CHECK(range.first == map.begin() + 3);
     CHECK(range.second == map.end());
   }
-  cudaStreamDestroy(stream);
+  hipStreamDestroy(stream);
 }
