@@ -1,0 +1,16 @@
+
+#pragma once
+
+#define XSTL_VERSION_MAJOR @PROJECT_VERSION_MAJOR @
+#define XSTL_VERSION_MINOR @PROJECT_VERSION_MINOR @
+#define XSTL_VERSION_PATCH @PROJECT_VERSION_PATCH @
+
+#define XSTL_VERSION_STR "@PROJECT_VERSION@"
+
+namespace xstd {
+  constexpr int version_major = XSTL_VERSION_MAJOR;
+  constexpr int version_minor = XSTL_VERSION_MINOR;
+  constexpr int version_patch = XSTL_VERSION_PATCH;
+
+  inline const char* version_string() { return XSTL_VERSION_STR; }
+}  // namespace xstd
