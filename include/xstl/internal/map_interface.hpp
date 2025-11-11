@@ -95,7 +95,7 @@ namespace xstd {
         static_cast<TMap*>(this)->fill_impl(std::forward<TArgs>(args)...);
       }
 
-      auto view() { return static_cast<TMap*>(this)->m_view; }
+      const auto& view() const { return static_cast<const TMap*>(this)->m_view; }
     };
 
   }  // namespace internal

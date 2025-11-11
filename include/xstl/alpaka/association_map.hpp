@@ -197,8 +197,8 @@ namespace xstd {
 
       /// @brief Returns a view of the association map.
       ///
-      /// @return A pointer to a View of the association map.
-      View view();
+      /// @return The view of the association map.
+      const View& view();
 #endif
 
     private:
