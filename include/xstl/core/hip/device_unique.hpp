@@ -27,11 +27,16 @@ namespace xstd::hip {
   class device_unique {
   private:
     std::unique_ptr<T, Deleter> m_data;
+    std::size_t m_size;
 
   public:
-    explicit device_unique(std::remove_extent_t<T>* data, Deleter deleter)
-        : m_data{data, deleter} {}
+    explicit device_unique(std::remove_extent_t<T>* data, std::size_t size, Deleter deleter)
+        : m_data{data, deleter}, m_size{size} {}
     auto* data() const { return m_data.get(); }
+    auto size() const { return m_size; }
+
+    operator std::span<const T>() const { return std::span<const T>{m_data.get(), m_size}; }
+    operator std::span<T>() { return std::span<T>{m_data.get(), m_size}; }
   };
 
   namespace detail {
@@ -57,7 +62,7 @@ namespace xstd::hip {
     auto dev = current_device();
     T* buf;
     hipMalloc(&buf, sizeof(T));
-    return typename detail::make_device_selector_t<T>{buf, Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
   }
 
   template <typename T>
@@ -69,7 +74,7 @@ namespace xstd::hip {
     void* buf;
     hipMalloc(&buf, sizeof(element_type) * size);
     return typename detail::make_device_selector_t<T>{reinterpret_cast<element_type*>(buf),
-                                                      Deleter{dev}};
+                                                      size Deleter{dev}};
   }
 
   template <typename T>
@@ -79,7 +84,7 @@ namespace xstd::hip {
     auto dev = current_device();
     T* buf;
     hipMallocAsync(&buf, sizeof(T), stream);
-    return typename detail::make_device_selector_t<T>{buf, Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
   }
 
   template <typename T>
@@ -90,8 +95,8 @@ namespace xstd::hip {
     auto dev = current_device();
     void* buf;
     hipMallocAsync(&buf, sizeof(element_type) * size, stream);
-    return typename detail::make_device_selector_t<T>{reinterpret_cast<element_type*>(buf),
-                                                      Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{
+        reinterpret_cast<element_type*>(buf), size, Deleter{dev}};
   }
 
 }  // namespace xstd::hip
