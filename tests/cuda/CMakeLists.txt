@@ -1,3 +1,5 @@
+enable_language(CUDA)
+
 add_executable(association_map_cuda.out association_map.t.cu)
 target_include_directories(
   association_map_cuda.out PRIVATE ${CMAKE_SOURCE_DIR}/../include
