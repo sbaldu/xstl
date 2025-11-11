@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "xstl/core/cuda/host_unique.hpp"
 #include "xstl/core/cuda/device_unique.hpp"
 #include "xstl/internal/map_interface.hpp"
 #include <cstdint>
@@ -22,7 +23,7 @@ namespace xstd::cuda {
     using const_iterator = const value_type*;
     using key_container_type = device_unique<key_type[]>;
     using mapped_container_type = device_unique<mapped_type[]>;
-    using key_container_host_type = std::vector<key_type>;  // TODO: use pinned memory
+    using key_container_host_type = host_unique<key_type[]>;
 
     struct containers {
       mapped_container_type values;
@@ -32,11 +33,11 @@ namespace xstd::cuda {
       explicit containers(key_type values_size, key_type keys_size)
           : values{make_device_unique<mapped_type[]>(values_size)},
             keys{make_device_unique<key_type[]>(keys_size + 1)},
-            keys_host(keys_size + 1) {}
+            keys_host{make_host_unique<key_type[]>(keys_size + 1)} {}
       explicit containers(key_type values_size, key_type keys_size, cudaStream_t stream)
           : values{make_device_unique<mapped_type[]>(values_size, stream)},
             keys{make_device_unique<key_type[]>(keys_size + 1, stream)},
-            keys_host(keys_size + 1) {}
+            keys_host{make_host_unique<key_type[]>(keys_size + 1)} {}
     };
 
     struct Extents {
