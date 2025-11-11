@@ -18,32 +18,32 @@ namespace xstd {
                                               std::span<association_map<T>::key_type> keys,
                                               std::span<association_map<T>::mapped_type> values) {
       auto accumulator =
-          ::alpaka::allocAsyncBuf<key_type, internal::Idx>(queue, internal::Vec1D{m_extents.keys});
-      ::alpaka::memset(queue, accumulator, 0);
+          alpaka::allocAsyncBuf<key_type, internal::Idx>(queue, internal::Vec1D{m_extents.keys});
+      alpaka::memset(queue, accumulator, 0);
       const auto block_size = 256u;
       const auto grid_size = (keys.size() + block_size - 1) / block_size;
       const auto work_division = internal::make_workdiv<internal::Acc>(grid_size, block_size);
-      ::alpaka::exec<internal::Acc>(queue,
-                                    work_division,
-                                    detail::KernelComputeAssociationSizes{},
-                                    keys.data(),
-                                    accumulator.data(),
-                                    values.size());
-      auto temporary_keys = ::alpaka::allocAsyncBuf<key_type, internal::Idx>(
+      alpaka::exec<internal::Acc>(queue,
+                                  work_division,
+                                  detail::KernelComputeAssociationSizes{},
+                                  keys.data(),
+                                  accumulator.data(),
+                                  values.size());
+      auto temporary_keys = alpaka::allocAsyncBuf<key_type, internal::Idx>(
           queue, internal::Vec1D{m_extents.keys + 1});
-      ::alpaka::memset(queue, temporary_keys, 0);
+      alpaka::memset(queue, temporary_keys, 0);
       internal::inclusive_scan(
           accumulator.data(), accumulator.data() + m_extents.keys, temporary_keys.data() + 1);
-      ::alpaka::memcpy(queue, m_data.keys, temporary_keys);
-      ::alpaka::exec<internal::Acc>(queue,
-                                    work_division,
-                                    detail::KernelFillAssociator{},
-                                    m_data.values.data(),
-                                    keys.data(),
-                                    temporary_keys.data(),
-                                    values.size());
-      ::alpaka::memcpy(queue, m_data.keys_host, m_data.keys);
-      ::alpaka::wait(queue);
+      alpaka::memcpy(queue, m_data.keys, temporary_keys);
+      alpaka::exec<internal::Acc>(queue,
+                                  work_division,
+                                  detail::KernelFillAssociator{},
+                                  m_data.values.data(),
+                                  keys.data(),
+                                  temporary_keys.data(),
+                                  values.size());
+      alpaka::memcpy(queue, m_data.keys_host, m_data.keys);
+      alpaka::wait(queue);
     }
 
   }  // namespace alpaka

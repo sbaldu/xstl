@@ -26,11 +26,11 @@ namespace xstd {
       using size_type = std::size_t;
       using iterator = value_type*;
       using const_iterator = const value_type*;
-      using key_container_type = ::alpaka::Buf<Device, key_type, internal::Dim1D, internal::Idx>;
+      using key_container_type = alpaka::Buf<Device, key_type, internal::Dim1D, internal::Idx>;
       using mapped_container_type =
-          ::alpaka::Buf<Device, mapped_type, internal::Dim1D, internal::Idx>;
+          alpaka::Buf<Device, mapped_type, internal::Dim1D, internal::Idx>;
       using key_container_host_type =
-          ::alpaka::Buf<::alpaka::DevCpu, key_type, internal::Dim1D, internal::Idx>;
+          alpaka::Buf<alpaka::DevCpu, key_type, internal::Dim1D, internal::Idx>;
 
       struct containers {
         mapped_container_type values;
@@ -38,21 +38,21 @@ namespace xstd {
         detail::keys_host_wrapper<Device>::type keys_host;
 
         template <typename TQueue>
-          requires std::same_as<Device, ::alpaka::DevCpu>
+          requires std::same_as<Device, alpaka::DevCpu>
         explicit containers(key_type values_size, key_type keys_size, const TQueue&)
-            : values{::alpaka::allocMappedBuf<mapped_type, internal::Idx>(
+            : values{alpaka::allocMappedBuf<mapped_type, internal::Idx>(
                   host, Platform(), internal::Vec1D{values_size})},
-              keys{::alpaka::allocMappedBuf<key_type, internal::Idx>(
+              keys{alpaka::allocMappedBuf<key_type, internal::Idx>(
                   host, Platform(), internal::Vec1D{keys_size + 1})},
               keys_host{this->keys} {}
         template <typename TQueue>
-          requires(not std::same_as<Device, ::alpaka::DevCpu>)
+          requires(not std::same_as<Device, alpaka::DevCpu>)
         explicit containers(key_type values_size, key_type keys_size, const TQueue& queue)
-            : values{::alpaka::allocAsyncBuf<mapped_type, internal::Idx>(
+            : values{alpaka::allocAsyncBuf<mapped_type, internal::Idx>(
                   queue, internal::Vec1D{values_size})},
-              keys{::alpaka::allocAsyncBuf<key_type, internal::Idx>(
-                  queue, internal::Vec1D{keys_size + 1})},
-              keys_host{::alpaka::allocMappedBuf<key_type, internal::Idx>(
+              keys{alpaka::allocAsyncBuf<key_type, internal::Idx>(queue,
+                                                                  internal::Vec1D{keys_size + 1})},
+              keys_host{alpaka::allocMappedBuf<key_type, internal::Idx>(
                   host, Platform(), internal::Vec1D{keys_size + 1})} {}
       };
 

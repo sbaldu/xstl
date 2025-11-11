@@ -6,6 +6,8 @@
 namespace xstd {
   namespace alpaka {
 
+    namespace alpaka = ::alpaka;
+
     using Platform = ALPAKA_BACKEND::Platform;
     using Device = ALPAKA_BACKEND::Device;
     using Queue = ALPAKA_BACKEND::Queue;
