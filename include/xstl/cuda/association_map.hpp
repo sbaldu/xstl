@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "xstl/core/cuda/device_unique.hpp"
 #include "xstl/internal/map_interface.hpp"
-#include "xstl/cuda/internal/device_unique.hpp"
 #include <cstdint>
 #include <vector>
 

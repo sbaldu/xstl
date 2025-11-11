@@ -1,8 +1,8 @@
 
 #pragma once
 
+#include "xstl/core/cuda/device_unique.hpp"
 #include "xstl/cuda/association_map.hpp"
-#include "xstl/cuda/internal/device_unique.hpp"
 #include "xstl/cuda/detail/kernels.cuh"
 #include <span>
 #include <thrust/execution_policy.h>
