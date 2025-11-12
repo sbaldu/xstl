@@ -20,6 +20,7 @@ TEST_CASE("Test a simple binary association map") {
   SUBCASE("Test the count method") {
     CHECK(map.count(0) == 3);
     CHECK(map.count(1) == 2);
+    CHECK_THROWS(map.count(2));
   }
   SUBCASE("Test the contains method") {
     CHECK(map.contains(0));
@@ -28,6 +29,7 @@ TEST_CASE("Test a simple binary association map") {
   }
   SUBCASE("Test the empty method") {
     CHECK(!map.empty());
+
     xstd::association_map<int> empty_map(0, 0);
     CHECK(empty_map.empty());
   }
