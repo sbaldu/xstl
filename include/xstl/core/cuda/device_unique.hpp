@@ -5,6 +5,7 @@
 #pragma once
 
 #include "xstl/core/cuda/current_device.hpp"
+#include "xstl/core/nostd/concepts/trivially_constructible.hpp"
 #include <cuda_runtime.h>
 
 #include <memory>
@@ -55,21 +56,17 @@ namespace xstd::cuda {
 
   }  // namespace detail
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique() {
-    static_assert(std::is_trivially_constructible<T>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     T* buf;
     cudaMalloc(&buf, sizeof(T));
     return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique(std::size_t size) {
     using element_type = typename std::remove_extent<T>::type;
-    static_assert(std::is_trivially_constructible<element_type>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     void* buf;
     cudaMalloc(&buf, sizeof(element_type) * size);
@@ -77,21 +74,17 @@ namespace xstd::cuda {
         reinterpret_cast<element_type*>(buf), size, Deleter{dev}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique(cudaStream_t stream) {
-    static_assert(std::is_trivially_constructible<T>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     T* buf;
     cudaMallocAsync(&buf, sizeof(T), stream);
     return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique(std::size_t size, cudaStream_t stream) {
     using element_type = typename std::remove_extent<T>::type;
-    static_assert(std::is_trivially_constructible<element_type>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     void* buf;
     cudaMallocAsync(&buf, sizeof(element_type) * size, stream);

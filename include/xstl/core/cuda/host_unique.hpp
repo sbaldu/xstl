@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "xstl/core/nostd/concepts/trivially_constructible.hpp"
 #include <cuda_runtime.h>
 #include <memory>
 
@@ -52,20 +53,16 @@ namespace xstd::cuda {
 
   }  // namespace detail
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_host_unique() {
-    static_assert(std::is_trivially_constructible<T>::value,
-                  "Allocating with non-trivial constructor is not supported");
     T* buf;
     cudaMallocHost(&buf, sizeof(T));
     return typename detail::make_host_selector_t<T>{buf, 1, host::Deleter{}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_host_unique(std::size_t size) {
     using element_type = typename std::remove_extent<T>::type;
-    static_assert(std::is_trivially_constructible<element_type>::value,
-                  "Allocating with non-trivial constructor is not supported");
     void* buf;
     cudaMallocHost(&buf, sizeof(element_type) * size);
     return typename detail::make_host_selector_t<T>{

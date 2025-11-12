@@ -5,6 +5,7 @@
 #pragma once
 
 #include "xstl/core/hip/current_device.hpp"
+#include "xstl/core/nostd/concepts/trivially_constructible.hpp"
 #include <hip_runtime.h>
 
 #include <memory>
@@ -55,21 +56,17 @@ namespace xstd::hip {
 
   }  // namespace detail
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique() {
-    static_assert(std::is_trivially_constructible<T>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     T* buf;
     hipMalloc(&buf, sizeof(T));
     return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique(std::size_t size) {
     using element_type = typename std::remove_extent<T>::type;
-    static_assert(std::is_trivially_constructible<element_type>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     void* buf;
     hipMalloc(&buf, sizeof(element_type) * size);
@@ -77,21 +74,17 @@ namespace xstd::hip {
                                                       size Deleter{dev}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique(hipStream_t stream) {
-    static_assert(std::is_trivially_constructible<T>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     T* buf;
     hipMallocAsync(&buf, sizeof(T), stream);
     return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
   }
 
-  template <typename T>
+  template <nostd::trivially_constructible T>
   auto make_device_unique(std::size_t size, hipStream_t stream) {
     using element_type = typename std::remove_extent<T>::type;
-    static_assert(std::is_trivially_constructible<element_type>::value,
-                  "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
     void* buf;
     hipMallocAsync(&buf, sizeof(element_type) * size, stream);
