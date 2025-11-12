@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include <cuda_runtime.h>
+#include <hip_runtime.h>
 #include <span>
 
-namespace xstd::cuda::detail {
+namespace xstd::hip::detail {
 
   __global__ void KernelComputeAssociationSizes(std::span<const int32_t> associations,
                                                 std::span<int32_t> bin_sizes) {
@@ -22,9 +22,9 @@ namespace xstd::cuda::detail {
     if (thidx < keys_buffer.size()) {
       const auto key = keys_buffer[thidx];
       if (key >= 0) {
-        indexes[atomicAdd(&temp_offsets[key], 1)] = thidx;
+        indexes[atomicAdd(&temp_offsets[bin_id], 1)] = thidx;
       }
     }
   }
 
-}  // namespace xstd::cuda::detail
+}  // namespace xstd::hip::detail

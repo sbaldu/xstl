@@ -2,19 +2,21 @@
 #pragma once
 
 #include <alpaka/alpaka.hpp>
+#include <span>
 
 namespace xstd {
   namespace alpaka {
     namespace detail {
 
+      namespace alpaka = ::alpaka;
+
       template <typename TFunc>
       struct KernelComputeAssociations {
         template <typename TAcc>
         ALPAKA_FN_ACC void operator()(const TAcc& acc,
-                                      size_t size,
-                                      int32_t* associations,
+                                      std::span<int32_t> associations,
                                       TFunc func) const {
-          for (auto i : ::alpaka::uniformElements(acc, size)) {
+          for (auto i : alpaka::uniformElements(acc, associations.size())) {
             associations[i] = func(i);
           }
         }
@@ -23,12 +25,11 @@ namespace xstd {
       struct KernelComputeAssociationSizes {
         template <typename TAcc>
         ALPAKA_FN_ACC void operator()(const TAcc& acc,
-                                      const int32_t* associations,
-                                      int32_t* bin_sizes,
-                                      size_t size) const {
-          for (auto i : ::alpaka::uniformElements(acc, size)) {
+                                      std::span<const int32_t> associations,
+                                      std::span<int32_t> bin_sizes) const {
+          for (auto i : alpaka::uniformElements(acc, associations.size())) {
             if (associations[i] >= 0)
-              ::alpaka::atomicAdd(acc, &bin_sizes[associations[i]], 1);
+              alpaka::atomicAdd(acc, &bin_sizes[associations[i]], 1);
           }
         }
       };
@@ -36,15 +37,13 @@ namespace xstd {
       struct KernelFillAssociator {
         template <typename TAcc, typename T>
         ALPAKA_FN_ACC void operator()(const TAcc& acc,
-                                      T* indexes,
-                                      const int32_t* bin_buffer,
-                                      int32_t* temp_offsets,
-                                      size_t size) const {
-          for (auto i : ::alpaka::uniformElements(acc, size)) {
-            const auto binId = bin_buffer[i];
-            if (binId >= 0) {
-              auto prev = ::alpaka::atomicAdd(acc, &temp_offsets[binId], 1);
-              indexes[prev] = i;
+                                      std::span<T> indexes,
+                                      std::span<const int32_t> keys_buffer,
+                                      std::span<int32_t> temp_offsets) const {
+          for (auto i : alpaka::uniformElements(acc, keys_buffer.size())) {
+            const auto key = keys_buffer[i];
+            if (key >= 0) {
+              indexes[alpaka::atomicAdd(acc, &temp_offsets[key], 1)] = i;
             }
           }
         }

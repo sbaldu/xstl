@@ -26,9 +26,8 @@ namespace xstd {
       alpaka::exec<internal::Acc>(queue,
                                   work_division,
                                   detail::KernelComputeAssociationSizes{},
-                                  keys.data(),
-                                  accumulator.data(),
-                                  values.size());
+                                  keys,
+                                  std::span{accumulator.data(), m_extents.keys});
       auto temporary_keys = alpaka::allocAsyncBuf<key_type, internal::Idx>(
           queue, internal::Vec1D{m_extents.keys + 1});
       alpaka::memset(queue, temporary_keys, 0);
@@ -38,10 +37,9 @@ namespace xstd {
       alpaka::exec<internal::Acc>(queue,
                                   work_division,
                                   detail::KernelFillAssociator{},
-                                  m_data.values.data(),
-                                  keys.data(),
-                                  temporary_keys.data(),
-                                  values.size());
+                                  std::span{m_data.values.data(), values.size()},
+                                  keys,
+                                  std::span{temporary_keys.data(), m_extents.keys});
       alpaka::memcpy(queue, m_data.keys_host, m_data.keys);
       alpaka::wait(queue);
     }
