@@ -38,10 +38,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Install dependencies on Ubuntu
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake g++ libboost-dev
+        sudo apt-get install -y libboost-dev
+
+    - name: Install dependencies on Windows
+      if: runner.os == 'Windows'
+      run: |
+        choco install boost -y
 
     - name: Build and run tests
       working-directory: ${{ github.workspace }}/tests
