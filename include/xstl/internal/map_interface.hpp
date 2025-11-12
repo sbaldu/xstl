@@ -35,54 +35,78 @@ namespace xstd {
 
       auto find(auto key) {
         auto& m = static_cast<TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return typename TMap::iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
       }
       auto find(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return typename TMap::const_iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
       }
 
       auto count(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
-
         if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
           throw std::out_of_range("Key is out of range.");
+
         return m.m_data.keys_host[key + 1] - m.m_data.keys_host[key];
       }
 
       bool contains(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
-
         if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
           throw std::out_of_range("Key is out of range.");
+
         return m.m_data.keys_host[key + 1] > m.m_data.keys_host[key];
       }
 
       auto lower_bound(auto key) {
         auto& m = static_cast<TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return typename TMap::iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
       }
       auto lower_bound(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return typename TMap::const_iterator{m.m_data.values.data() + m.m_data.keys_host[key]};
       }
 
       auto upper_bound(auto key) {
         auto& m = static_cast<TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return typename TMap::iterator{m.m_data.values.data() + m.m_data.keys_host[key + 1]};
       }
       auto upper_bound(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return typename TMap::const_iterator{m.m_data.values.data() + m.m_data.keys_host[key + 1]};
       }
 
       auto equal_range(auto key) {
         auto& m = static_cast<TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return std::make_pair(m.m_data.values.data() + m.m_data.keys_host[key],
                               m.m_data.values.data() + m.m_data.keys_host[key + 1]);
       }
       auto equal_range(auto key) const {
         const auto& m = static_cast<const TMap&>(*this);
+        if (key < 0 || static_cast<typename TMap::size_type>(key) >= m.m_extents.keys)
+          throw std::out_of_range("Key is out of range.");
+
         return std::make_pair(m.m_data.values.data() + m.m_data.keys_host[key],
                               m.m_data.values.data() + m.m_data.keys_host[key + 1]);
       }

@@ -20,11 +20,13 @@ TEST_CASE("Test a simple binary association map") {
   SUBCASE("Test the count method") {
     CHECK(map.count(0) == 3);
     CHECK(map.count(1) == 2);
+    CHECK_THROWS(map.count(-1));
     CHECK_THROWS(map.count(2));
   }
   SUBCASE("Test the contains method") {
     CHECK(map.contains(0));
     CHECK(map.contains(1));
+    CHECK_THROWS(map.contains(-1));
     CHECK_THROWS(map.contains(2));
   }
   SUBCASE("Test the empty method") {
@@ -38,6 +40,8 @@ TEST_CASE("Test a simple binary association map") {
     CHECK(map.find(1) == map.begin() + 3);
     CHECK(*map.find(0) == 0);
     CHECK(*map.find(1) == 1);
+    CHECK_THROWS(map.find(-1));
+    CHECK_THROWS(map.find(2));
   }
   SUBCASE("Test the lower_bound and upper_bound methods") {
     auto lower = map.lower_bound(0);
@@ -49,6 +53,10 @@ TEST_CASE("Test a simple binary association map") {
     upper = map.upper_bound(1);
     CHECK(lower == map.begin() + 3);
     CHECK(upper == map.end());
+    CHECK_THROWS(map.lower_bound(-1));
+    CHECK_THROWS(map.lower_bound(2));
+    CHECK_THROWS(map.upper_bound(-1));
+    CHECK_THROWS(map.upper_bound(2));
   }
   SUBCASE("Test the equal_range method") {
     auto range = map.equal_range(0);
@@ -58,6 +66,9 @@ TEST_CASE("Test a simple binary association map") {
     range = map.equal_range(1);
     CHECK(range.first == map.begin() + 3);
     CHECK(range.second == map.end());
+
+    CHECK_THROWS(map.equal_range(-1));
+    CHECK_THROWS(map.equal_range(2));
   }
   SUBCASE("Test the view method") {
     auto view = map.view();
@@ -86,10 +97,13 @@ TEST_CASE("Test binary association map with floats") {
   SUBCASE("Test the count method") {
     CHECK(map.count(0) == 3);
     CHECK(map.count(1) == 2);
+    CHECK_THROWS(map.count(-1));
+    CHECK_THROWS(map.count(2));
   }
   SUBCASE("Test the contains method") {
     CHECK(map.contains(0));
     CHECK(map.contains(1));
+    CHECK_THROWS(map.contains(-1));
     CHECK_THROWS(map.contains(2));
   }
   SUBCASE("Test the empty method") {
@@ -102,6 +116,8 @@ TEST_CASE("Test binary association map with floats") {
     CHECK(map.find(1) == map.begin() + 3);
     CHECK(*map.find(0) == 0);
     CHECK(*map.find(1) == 1);
+    CHECK_THROWS(map.find(-1));
+    CHECK_THROWS(map.find(2));
   }
   SUBCASE("Test the lower_bound and upper_bound methods") {
     auto lower = map.lower_bound(0);
@@ -113,6 +129,10 @@ TEST_CASE("Test binary association map with floats") {
     upper = map.upper_bound(1);
     CHECK(lower == map.begin() + 3);
     CHECK(upper == map.end());
+    CHECK_THROWS(map.lower_bound(-1));
+    CHECK_THROWS(map.lower_bound(2));
+    CHECK_THROWS(map.upper_bound(-1));
+    CHECK_THROWS(map.upper_bound(2));
   }
   SUBCASE("Test the equal_range method") {
     auto range = map.equal_range(0);
@@ -122,6 +142,9 @@ TEST_CASE("Test binary association map with floats") {
     range = map.equal_range(1);
     CHECK(range.first == map.begin() + 3);
     CHECK(range.second == map.end());
+
+    CHECK_THROWS(map.equal_range(-1));
+    CHECK_THROWS(map.equal_range(2));
   }
   SUBCASE("Test the view method") {
     auto view = map.view();
