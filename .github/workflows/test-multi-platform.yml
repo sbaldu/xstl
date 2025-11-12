@@ -47,14 +47,14 @@ jobs:
     - name: Install dependencies on Windows
       if: runner.os == 'Windows'
       run: |
-        pip install conan
-        conan profile detect
-        conan install . --build=missing -o boost/*:header_only=False
+        git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+        .\vcpkg\vcpkg.exe install boost
 
     - name: Build and run tests
       working-directory: ${{ github.workspace }}/tests
       run: |
-        cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} ;
+        cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake
         cmake --build build --parallel
         ./build/cpu/*.out
         ./build/alpaka/*.out
