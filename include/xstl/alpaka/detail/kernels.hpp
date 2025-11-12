@@ -34,9 +34,9 @@ namespace xstd {
       };
 
       struct KernelFillAssociator {
-        template <typename TAcc>
+        template <typename TAcc, typename T>
         ALPAKA_FN_ACC void operator()(const TAcc& acc,
-                                      int32_t* indexes,
+                                      T* indexes,
                                       const int32_t* bin_buffer,
                                       int32_t* temp_offsets,
                                       size_t size) const {

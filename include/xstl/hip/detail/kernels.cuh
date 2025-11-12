@@ -14,7 +14,8 @@ namespace xstd::hip::detail {
     }
   }
 
-  __global__ void KernelFillAssociator(int32_t* indexes,
+  template <typename T>
+  __global__ void KernelFillAssociator(T* indexes,
                                        const int32_t* bin_buffer,
                                        int32_t* temp_offsets,
                                        std::size_t size) {
