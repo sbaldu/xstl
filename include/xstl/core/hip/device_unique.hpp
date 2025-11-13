@@ -13,25 +13,29 @@
 
 namespace xstd::hip {
 
-  class Deleter {
-  private:
-    int m_device;
+  namespace device {
 
-  public:
-    Deleter() = default;
-    Deleter(int device) : m_device{device} {}
+    class Deleter {
+    private:
+      int m_device;
 
-    void operator()(void* ptr) { hipFree(ptr); }
-  };
+    public:
+      Deleter() = default;
+      Deleter(int device) : m_device{device} {}
+
+      void operator()(void* ptr) { hipFree(ptr); }
+    };
+
+  }  // namespace device
 
   template <typename T>
   class device_unique {
   private:
-    std::unique_ptr<T, Deleter> m_data;
+    std::unique_ptr<T, device::Deleter> m_data;
     std::size_t m_size;
 
   public:
-    explicit device_unique(std::remove_extent_t<T>* data, std::size_t size, Deleter deleter)
+    explicit device_unique(std::remove_extent_t<T>* data, std::size_t size, device::Deleter deleter)
         : m_data{data, deleter}, m_size{size} {}
     auto* data() const { return m_data.get(); }
     auto size() const { return m_size; }
@@ -61,7 +65,7 @@ namespace xstd::hip {
     auto dev = current_device();
     T* buf;
     hipMalloc(&buf, sizeof(T));
-    return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{buf, 1, device::Deleter{dev}};
   }
 
   template <nostd::trivially_constructible T>
@@ -71,7 +75,7 @@ namespace xstd::hip {
     void* buf;
     hipMalloc(&buf, sizeof(element_type) * size);
     return typename detail::make_device_selector_t<T>{reinterpret_cast<element_type*>(buf),
-                                                      size Deleter{dev}};
+                                                      size device::Deleter{dev}};
   }
 
   template <nostd::trivially_constructible T>
@@ -79,7 +83,7 @@ namespace xstd::hip {
     auto dev = current_device();
     T* buf;
     hipMallocAsync(&buf, sizeof(T), stream);
-    return typename detail::make_device_selector_t<T>{buf, 1, Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{buf, 1, device::Deleter{dev}};
   }
 
   template <nostd::trivially_constructible T>
@@ -89,7 +93,7 @@ namespace xstd::hip {
     void* buf;
     hipMallocAsync(&buf, sizeof(element_type) * size, stream);
     return typename detail::make_device_selector_t<T>{
-        reinterpret_cast<element_type*>(buf), size, Deleter{dev}};
+        reinterpret_cast<element_type*>(buf), size, device::Deleter{dev}};
   }
 
 }  // namespace xstd::hip
