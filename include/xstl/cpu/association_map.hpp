@@ -5,10 +5,10 @@
 #pragma once
 
 #include "xstl/internal/map_interface.hpp"
-#include <iostream>
-#include <memory>
+#include <cstddef>
+#include <cstdint>
+#include <span>
 #include <vector>
-#include <utility>
 
 namespace xstd {
 

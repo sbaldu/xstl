@@ -8,7 +8,6 @@
 #include "xstl/core/hip/device_unique.hpp"
 #include "xstl/internal/map_interface.hpp"
 #include <cstdint>
-#include <vector>
 
 namespace xstd::hip {
 

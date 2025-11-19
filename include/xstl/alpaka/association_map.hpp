@@ -8,9 +8,10 @@
 #include "xstl/alpaka/detail/defines.hpp"
 #include "xstl/alpaka/detail/keys_host_wrapper.hpp"
 #include <alpaka/alpaka.hpp>
+#include <cstddef>
+#include <cstdint>
 #include <concepts>
-#include <utility>
-#include <variant>
+#include <span>
 
 namespace xstd {
   namespace alpaka {

@@ -5,9 +5,9 @@
 #include "xstl/cpu/association_map.hpp"
 #include "xstl/internal/default_policy.hpp"
 #include <algorithm>
-#include <iostream>
 #include <numeric>
-#include <utility>
+#include <span>
+#include <vector>
 
 namespace xstd {
 
