@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "xstl/core/nostd/concepts/trivially_constructible.hpp"
+#include "xstl/core/nostd/concepts/trivially_copyable.hpp"
 #include <hip_runtime.h>
 #include <memory>
 
@@ -56,14 +56,14 @@ namespace xstd::hip {
 
   }  // namespace detail
 
-  template <nostd::trivially_constructible T>
+  template <nostd::trivially_copyable T>
   auto make_host_unique() {
     T* buf;
     hipHostMalloc(&buf, sizeof(T));
     return typename detail::make_host_selector_t<T>{buf, 1, host::Deleter{}};
   }
 
-  template <nostd::trivially_constructible T>
+  template <nostd::trivially_copyable T>
   auto make_host_unique(std::size_t size) {
     using element_type = typename std::remove_extent<T>::type;
     void* buf;

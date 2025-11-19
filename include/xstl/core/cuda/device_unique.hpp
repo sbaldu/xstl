@@ -5,7 +5,7 @@
 #pragma once
 
 #include "xstl/core/cuda/current_device.hpp"
-#include "xstl/core/nostd/concepts/trivially_constructible.hpp"
+#include "xstl/core/nostd/concepts/trivially_copyable.hpp"
 #include <cuda_runtime.h>
 
 #include <memory>
@@ -60,7 +60,7 @@ namespace xstd::cuda {
 
   }  // namespace detail
 
-  template <nostd::trivially_constructible T>
+  template <nostd::trivially_copyable T>
   auto make_device_unique() {
     auto dev = current_device();
     T* buf;
@@ -68,7 +68,7 @@ namespace xstd::cuda {
     return typename detail::make_device_selector_t<T>{buf, 1, device::Deleter{dev}};
   }
 
-  template <nostd::trivially_constructible T>
+  template <nostd::trivially_copyable T>
   auto make_device_unique(std::size_t size) {
     using element_type = typename std::remove_extent<T>::type;
     auto dev = current_device();
@@ -78,7 +78,7 @@ namespace xstd::cuda {
         reinterpret_cast<element_type*>(buf), size, device::Deleter{dev}};
   }
 
-  template <nostd::trivially_constructible T>
+  template <nostd::trivially_copyable T>
   auto make_device_unique(cudaStream_t stream) {
     auto dev = current_device();
     T* buf;
@@ -86,7 +86,7 @@ namespace xstd::cuda {
     return typename detail::make_device_selector_t<T>{buf, 1, device::Deleter{dev}};
   }
 
-  template <nostd::trivially_constructible T>
+  template <nostd::trivially_copyable T>
   auto make_device_unique(std::size_t size, cudaStream_t stream) {
     using element_type = typename std::remove_extent<T>::type;
     auto dev = current_device();
