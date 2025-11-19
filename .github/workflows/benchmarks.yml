@@ -1,0 +1,33 @@
+name: Build and run benchmarks
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  benchmarks:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: false
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ libboost-dev libbenchmark-dev
+
+    - name: Compile and run benchmark
+      working-directory: ${{ github.workspace }}/benchmarks
+      run: |
+        cmake -B build
+        cmake --build build --parallel
+        ./build/binary_associator/cpu/binary_associator_cpu.out
+        ./build/binary_associator/alpaka/binary_associator_alpaka.out
+
