@@ -18,7 +18,8 @@ namespace xstd::hip {
     hipMemset(accumulator.data(), 0, sizeof(key_type) * m_extents.keys);
     const auto block_size = 256u;
     const auto grid_size = (keys.size() + block_size - 1) / block_size;
-    detail::KernelComputeAssociationSizes<<<grid_size, block_size>>>(keys, accumulator);
+    detail::KernelComputeAssociationSizes<<<grid_size, block_size>>>(
+        keys.data(), accumulator.data(), values.size());
 
     auto temporary_keys = make_device_unique<key_type[]>(m_extents.keys + 1);
     hipMemset(temporary_keys.data(), 0, sizeof(key_type) * (m_extents.keys + 1));
@@ -30,7 +31,8 @@ namespace xstd::hip {
               temporary_keys.data(),
               sizeof(key_type) * (m_extents.keys + 1),
               hipMemcpyDeviceToDevice);
-    detail::KernelFillAssociator<<<grid_size, block_size>>>(m_data.values, keys, temporary_keys);
+    detail::KernelFillAssociator<<<grid_size, block_size>>>(
+        m_data.values.data(), keys.data(), temporary_keys.data(), values.size());
     hipMemcpy(m_data.keys_host.data(),
               m_data.keys.data(),
               sizeof(key_type) * (m_extents.keys + 1),
@@ -45,7 +47,8 @@ namespace xstd::hip {
     hipMemsetAsync(accumulator.data(), 0, sizeof(key_type) * m_extents.keys, stream);
     const auto block_size = 256u;
     const auto grid_size = (keys.size() + block_size - 1) / block_size;
-    detail::KernelComputeAssociationSizes<<<grid_size, block_size, 0, stream>>>(keys, accumulator);
+    detail::KernelComputeAssociationSizes<<<grid_size, block_size, 0, stream>>>(
+        keys.data(), accumulator.data(), values.size());
 
     auto temporary_keys = make_device_unique<key_type[]>(m_extents.keys + 1, stream);
     hipMemsetAsync(temporary_keys.data(), 0, sizeof(key_type) * (m_extents.keys + 1), stream);
@@ -59,7 +62,7 @@ namespace xstd::hip {
                    hipMemcpyDeviceToDevice,
                    stream);
     detail::KernelFillAssociator<<<grid_size, block_size, 0, stream>>>(
-        m_data.values, keys, temporary_keys);
+        m_data.values.data(), keys.data(), temporary_keys.data(), values.size());
     hipMemcpyAsync(m_data.keys_host.data(),
                    m_data.keys.data(),
                    sizeof(key_type) * (m_extents.keys + 1),

@@ -6,18 +6,20 @@
 
 namespace xstd::hip::detail {
 
-  __global__ void KernelComputeAssociationSizes(std::span<const int32_t> associations,
-                                                std::span<int32_t> bin_sizes) {
+  __global__ void KernelComputeAssociationSizes(const int32_t* associations,
+                                                int32_t* bin_sizes,
+                                                std::size_t values_size) {
     const auto thidx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (thidx < associations.size() and associations[thidx] >= 0) {
+    if (thidx < values_size and associations[thidx] >= 0) {
       atomicAdd(&bin_sizes[associations[thidx]], 1);
     }
   }
 
-  template <typename T>
-  __global__ void KernelFillAssociator(std::span<T> indexes,
-                                       std::span<const int32_t> keys_buffer,
-                                       std::span<int32_t> temp_offsets) {
+  template <typename TMapped>
+  __global__ void KernelFillAssociator(TMapped* indexes,
+                                       const int32_t* keys_buffer,
+                                       int32_t* temp_offsets,
+                                       std::size_t values_size) {
     const auto thidx = blockIdx.x * blockDim.x + threadIdx.x;
     if (thidx < keys_buffer.size()) {
       const auto key = keys_buffer[thidx];
