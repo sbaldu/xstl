@@ -35,13 +35,17 @@ namespace xstd::hip {
     std::size_t m_size;
 
   public:
-    explicit device_unique(std::remove_extent_t<T>* data, std::size_t size, device::Deleter deleter)
+    using value_type = std::remove_extent_t<T>;
+
+    explicit device_unique(value_type* data, std::size_t size, device::Deleter deleter)
         : m_data{data, deleter}, m_size{size} {}
     auto* data() const { return m_data.get(); }
     auto size() const { return m_size; }
 
-    operator std::span<const T>() const { return std::span<const T>{m_data.get(), m_size}; }
-    operator std::span<T>() { return std::span<T>{m_data.get(), m_size}; }
+    operator std::span<const value_type>() const {
+      return std::span<const value_type>{m_data.get(), m_size};
+    }
+    operator std::span<value_type>() { return std::span<value_type>{m_data.get(), m_size}; }
   };
 
   namespace detail {

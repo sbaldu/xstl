@@ -27,7 +27,9 @@ namespace xstd::cuda {
     std::size_t m_size;
 
   public:
-    explicit host_unique(std::remove_extent_t<T>* data, std::size_t size, host::Deleter deleter)
+    using value_type = std::remove_extent_t<T>;
+
+    explicit host_unique(value_type* data, std::size_t size, host::Deleter deleter)
         : m_data{data, deleter}, m_size{size} {}
 
     auto* data() const { return m_data.get(); }
@@ -35,6 +37,11 @@ namespace xstd::cuda {
 
     const auto& operator[](std::size_t idx) const { return m_data[idx]; }
     auto& operator[](std::size_t idx) { return m_data[idx]; }
+
+    operator std::span<const value_type>() const {
+      return std::span<const value_type>{m_data.get(), m_size};
+    }
+    operator std::span<value_type>() { return std::span<value_type>{m_data.get(), m_size}; }
   };
 
   namespace detail {
