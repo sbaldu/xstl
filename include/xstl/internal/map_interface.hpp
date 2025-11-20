@@ -8,6 +8,10 @@
 namespace xstd {
   namespace internal {
 
+    template <typename TMap, typename... TArgs>
+    concept fill_invocable_with =
+        requires(TMap& m, TArgs&&... xs) { m.fill_impl(std::forward<TArgs>(xs)...); };
+
     // map_interface provides a common interface for map-like structures, enforcing the
     // implementations of all the common methods accross every backend.
     template <typename TMap>
@@ -113,9 +117,8 @@ namespace xstd {
 
       template <typename... TArgs>
       void fill(TArgs&&... args) {
-        static_assert(
-            requires(TMap& m, TArgs&&... xs) { m.fill_impl(std::forward<TArgs>(xs)...); },
-            "The arguments provided are not compatible with the selected backend.");
+        static_assert(fill_invocable_with<TMap, TArgs...>,
+                      "The arguments provided are not compatible with the selected backend.");
         static_cast<TMap*>(this)->fill_impl(std::forward<TArgs>(args)...);
       }
 
