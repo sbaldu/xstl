@@ -29,9 +29,9 @@ jobs:
         cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
         cmake --build build/debug 
         ./build/debug/cpu/*.out --reporters=console --success
-        ./build/debug/alpaka/*.out --reporters=console --success
+        ./build/debug/alpaka/cpu/*.out --reporters=console --success
         cmake -B build/release -DCMAKE_BUILD_TYPE=Release
         cmake --build build/release
         ./build/release/cpu/*.out --reporters=console --success
-        ./build/release/alpaka/*.out --reporters=console --success
+        ./build/release/alpaka/cpu/*.out --reporters=console --success
 

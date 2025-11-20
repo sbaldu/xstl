@@ -29,5 +29,5 @@ jobs:
         cmake -B build
         cmake --build build --parallel
         ./build/binary_associator/cpu/binary_associator_cpu.out
-        ./build/binary_associator/alpaka/binary_associator_alpaka.out
+        ./build/binary_associator/alpaka/cpu/binary_associator_alpaka_cpu.out
 
