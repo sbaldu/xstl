@@ -2,6 +2,8 @@ enable_language(CUDA)
 
 set_source_files_properties(../association_map.t.cpp PROPERTIES LANGUAGE CUDA)
 add_executable(association_map_alpaka_cuda.out ../association_map.t.cpp)
+add_test(NAME association_map_alpaka_cuda.out
+         COMMAND association_map_alpaka_cuda.out)
 target_include_directories(
   association_map_alpaka_cuda.out PRIVATE ${CMAKE_SOURCE_DIR}/../include
                                           ${doctest_SOURCE_DIR}/doctest)

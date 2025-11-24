@@ -22,8 +22,7 @@ jobs:
         run: |
           sudo apt install -y cmake g++ libboost-dev
           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCOVERAGE=ON && cmake --build build --parallel
-          ./build/association_map/cpu/association_map_cpu.out
-          ./build/association_map/alpaka/cpu/association_map_alpaka_cpu.out
+          ctest --test-dir build --output-on-failure
 
       - name: Create coverage report
         working-directory: ${{github.workspace}}/tests/build

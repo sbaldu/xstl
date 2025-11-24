@@ -28,10 +28,9 @@ jobs:
       run: |
         cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
         cmake --build build/debug 
-        ./build/debug/association_map/cpu/*.out --reporters=console --success
-        ./build/debug/association_map/alpaka/cpu/*.out --reporters=console --success
+        ctest --test-dir build/debug --output-on-failure
+
         cmake -B build/release -DCMAKE_BUILD_TYPE=Release
         cmake --build build/release
-        ./build/release/association_map/cpu/*.out --reporters=console --success
-        ./build/release/association_map/alpaka/cpu/*.out --reporters=console --success
+        ctest --test-dir build/release --output-on-failure
 

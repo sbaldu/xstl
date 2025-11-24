@@ -1,6 +1,7 @@
 enable_language(CUDA)
 
 add_executable(association_map_cuda.out association_map.t.cu)
+add_test(NAME association_map_cuda.out COMMAND association_map_cuda.out)
 target_include_directories(
   association_map_cuda.out PRIVATE ${CMAKE_SOURCE_DIR}/../include
                                    ${doctest_SOURCE_DIR}/doctest)

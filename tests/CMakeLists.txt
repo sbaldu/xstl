@@ -29,4 +29,6 @@ if(NOT doctest_POPULATED)
   FetchContent_MakeAvailable(doctest)
 endif()
 
+enable_testing()
+
 add_subdirectory(association_map)
