@@ -1,2 +1,2 @@
 include/xstl/core/cuda/*.hpp linguist-language=Cuda
-include/xstl/cuda/**/*.hpp linguist-language=Cuda
+include/xstl/association_map/cuda/**/*.hpp linguist-language=Cuda

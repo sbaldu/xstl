@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "xstl/cpu/association_map.hpp"
-#include "xstl/internal/default_policy.hpp"
+#include "xstl/association_map/cpu/association_map.hpp"
+#include "xstl/association_map/internal/default_policy.hpp"
 #include <algorithm>
 #include <numeric>
 #include <span>

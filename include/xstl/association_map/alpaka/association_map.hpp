@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "xstl/internal/map_interface.hpp"
-#include "xstl/alpaka/detail/defines.hpp"
-#include "xstl/alpaka/detail/keys_host_wrapper.hpp"
+#include "xstl/association_map/internal/map_interface.hpp"
+#include "xstl/core/alpaka/defines.hpp"
+#include "xstl/association_map/alpaka/detail/keys_host_wrapper.hpp"
 #include <alpaka/alpaka.hpp>
 #include <cstddef>
 #include <cstdint>
@@ -217,4 +217,4 @@ namespace xstd {
   }  // namespace alpaka
 }  // namespace xstd
 
-#include "xstl/alpaka/detail/association_map.hpp"
+#include "xstl/association_map/alpaka/detail/association_map.hpp"

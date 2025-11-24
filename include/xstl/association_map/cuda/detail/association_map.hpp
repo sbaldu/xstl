@@ -2,8 +2,8 @@
 #pragma once
 
 #include "xstl/core/cuda/device_unique.hpp"
-#include "xstl/cuda/association_map.hpp"
-#include "xstl/cuda/detail/kernels.cuh"
+#include "xstl/cuda/association_map/association_map.hpp"
+#include "xstl/cuda/association_map/detail/kernels.cuh"
 #include <span>
 #include <thrust/execution_policy.h>
 #include <thrust/async/scan.h>

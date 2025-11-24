@@ -1,15 +1,16 @@
 /// @file association_map.hpp
-/// @brief A header file defining the HIP implementation of the association_map, a GPU-friendly map-like structure
+/// @brief A header file defining the CUDA implementation of the association_map, a GPU-friendly map-like structure
 /// @author Simone Balducci
 
 #pragma once
 
-#include "xstl/core/hip/host_unique.hpp"
-#include "xstl/core/hip/device_unique.hpp"
-#include "xstl/internal/map_interface.hpp"
+#include "xstl/core/cuda/host_unique.hpp"
+#include "xstl/core/cuda/device_unique.hpp"
+#include "xstl/association_map/internal/map_interface.hpp"
 #include <cstdint>
+#include <vector>
 
-namespace xstd::hip {
+namespace xstd::cuda {
 
   template <typename T>
   class association_map : public internal::map_interface<association_map<T>> {
@@ -33,7 +34,7 @@ namespace xstd::hip {
           : values{make_device_unique<mapped_type[]>(values_size)},
             keys{make_device_unique<key_type[]>(keys_size + 1)},
             keys_host{make_host_unique<key_type[]>(keys_size + 1)} {}
-      explicit containers(key_type values_size, key_type keys_size, hipStream_t stream)
+      explicit containers(key_type values_size, key_type keys_size, cudaStream_t stream)
           : values{make_device_unique<mapped_type[]>(values_size, stream)},
             keys{make_device_unique<key_type[]>(keys_size + 1, stream)},
             keys_host{make_host_unique<key_type[]>(keys_size + 1)} {}
@@ -67,7 +68,7 @@ namespace xstd::hip {
         : m_data(values, keys),
           m_view{m_data.values.data(), m_data.keys.data(), Extents{values, keys}},
           m_extents{values, keys} {}
-    explicit association_map(size_type values, size_type keys, hipStream_t stream)
+    explicit association_map(size_type values, size_type keys, cudaStream_t stream)
         : m_data(values, keys, stream),
           m_view{m_data.values.data(), m_data.keys.data(), Extents{values, keys}},
           m_extents{values, keys} {}
@@ -172,7 +173,7 @@ namespace xstd::hip {
     /// @param queue An Alpaka queue used for memory operations.
     /// @param keys A span of keys to be associated with the values.
     /// @param values A span of values to be associated with the keys.
-    void fill(hipStream_t stream, std::span<key_type> keys, std::span<mapped_type> values);
+    void fill(cudaStream_t stream, std::span<key_type> keys, std::span<mapped_type> values);
 
     /// @brief Returns a view of the association map.
     ///
@@ -187,13 +188,13 @@ namespace xstd::hip {
 
   private:
     inline void fill_impl(std::span<key_type> keys, std::span<mapped_type> values);
-    inline void fill_impl(hipStream_t stream,
+    inline void fill_impl(cudaStream_t stream,
                           std::span<key_type> keys,
                           std::span<mapped_type> values);
 
     friend struct xstd::internal::map_interface<association_map<T>>;
   };
 
-}  // namespace xstd::hip
+}  // namespace xstd::cuda
 
-#include "xstl/hip/detail/association_map.hpp"
+#include "xstl/association_map/cuda/detail/association_map.hpp"

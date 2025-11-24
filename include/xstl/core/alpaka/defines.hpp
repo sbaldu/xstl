@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "xstl/alpaka/internal/config.hpp"
+#include "xstl/core/alpaka/config.hpp"
 
 namespace xstd {
   namespace alpaka {
