@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MPL-2.0
+
+/// @file association_map/association_map.hpp
+/// @brief Geader file including all the implementations of the association_map
+/// @author Simone Balducci
 
 #pragma once
 

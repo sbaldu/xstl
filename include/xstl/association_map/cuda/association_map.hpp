@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 /// @file association_map.hpp
 /// @brief A header file defining the CUDA implementation of the association_map, a GPU-friendly map-like structure
 /// @author Simone Balducci

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 /// @file device_unique.hpp
 /// @brief A header file defining a unique pointer for CUDA device memory
 /// @author Simone Balducci, CMS-Patatrack team (CERN)

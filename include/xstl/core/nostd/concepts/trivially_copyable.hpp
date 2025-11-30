@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 /// @file trivially_constructible.hpp
 /// @brief A header file defining the trivially_copyable concept
 /// @author Simone Balducci

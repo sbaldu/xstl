@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MPL-2.0
+
+/// @author Simone Balducci
+
 #pragma once
 
 #include <alpaka/alpaka.hpp>
